@@ -38,4 +38,106 @@ curl http://localhost:8080/api/v1/employee -H "X-API-KEY: <key>"
 
 ## Testing
 
-The API can be tested using Postman or curl. All endpoints require the `X-API-KEY` header (default: `changeme-local-dev-key`). `GET /api/v1/employee` returns all employees, `GET /api/v1/employee/{uuid}` returns a specific employee or `404` if it doesn't exist, and `POST /api/v1/employee` creates a new employee and returns `201 Created`. Invalid input returns `400 Bad Request`, while requests without a valid API key return `401 Unauthorized`.
+The API can be tested using Postman or `curl`. All requests require the `X-API-KEY` header.
+
+**Base URL**
+
+```
+http://localhost:8080/api/v1/employee
+```
+
+**Default API Key**
+
+```
+changeme-local-dev-key
+```
+
+### 1. Get All Employees
+
+Request
+
+```bash
+curl -X GET http://localhost:8080/api/v1/employee \
+  -H "X-API-KEY: changeme-local-dev-key"
+```
+
+Expected Result
+
+- Status: `200 OK`
+- Returns a JSON array containing all employees.
+
+---
+
+### 2. Get Employee by UUID
+
+Replace `<employee-uuid>` with a valid UUID returned from the previous request.
+
+```bash
+curl -X GET http://localhost:8080/api/v1/employee/<employee-uuid> \
+  -H "X-API-KEY: changeme-local-dev-key"
+```
+
+Expected Result
+
+- Status: `200 OK`
+- Returns the requested employee.
+
+If the UUID does not exist:
+
+- Status: `404 Not Found`
+- Returns an error response.
+
+---
+
+### 3. Create Employee
+
+```bash
+curl -X POST http://localhost:8080/api/v1/employee \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: changeme-local-dev-key" \
+  -d '{
+        "firstName":"John",
+        "lastName":"Doe",
+        "email":"john.doe@example.com",
+        "phoneNumber":"9876543210"
+      }'
+```
+
+Expected Result
+
+- Status: `201 Created`
+- Returns the newly created employee including its generated UUID.
+
+---
+
+### 4. Invalid Request
+
+Send a request with missing or invalid fields.
+
+Expected Result
+
+- Status: `400 Bad Request`
+- Returns validation error details.
+
+---
+
+### 5. Invalid or Missing API Key
+
+```bash
+curl -X GET http://localhost:8080/api/v1/employee
+```
+
+Expected Result
+
+- Status: `401 Unauthorized`
+
+---
+
+### 6. Internal Server Error
+
+Any unexpected exception is handled by the global exception handler.
+
+Expected Result
+
+- Status: `500 Internal Server Error`
+- Returns a standardized error response without exposing internal implementation details.
