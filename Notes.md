@@ -76,7 +76,7 @@ Replace `<employee-uuid>` with a valid UUID returned from the previous request.
 curl -X GET http://localhost:8080/api/v1/employee/<employee-uuid> \
   -H "X-API-KEY: changeme-local-dev-key"
 ```
-
+for eg: UUID = dceb7cc2-e423-4fed-bc54-7e5936e9879a
 Expected Result
 
 - Status: `200 OK`
