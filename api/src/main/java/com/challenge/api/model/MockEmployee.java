@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
+// MockEmployee is an in-memory implementation of the Employee model.
+// It is used only for this coding challenge instead of a database.
 public class MockEmployee implements Employee {
 
     private UUID uuid;
