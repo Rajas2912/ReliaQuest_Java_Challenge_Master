@@ -49,10 +49,6 @@ public interface Employee {
 
     void setContractHireDate(Instant date);
 
-    /**
-     * Nullable.
-     * @return null, if Employee has not been terminated.
-     */
     Instant getContractTerminationDate();
 
     void setContractTerminationDate(Instant date);

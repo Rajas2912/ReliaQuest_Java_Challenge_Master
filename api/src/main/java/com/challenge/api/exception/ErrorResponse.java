@@ -3,7 +3,7 @@ package com.challenge.api.exception;
 import java.time.Instant;
 
 /**
- * Consistent error body returned by every {@code @ExceptionHandler} in {@code EmployeeController}.
+ * Simple error response shape, used by all the exception handlers in EmployeeController.
  */
 public class ErrorResponse {
 

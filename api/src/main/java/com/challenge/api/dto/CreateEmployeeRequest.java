@@ -1,13 +1,12 @@
 package com.challenge.api.dto;
 
-import com.challenge.api.model.Employee;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 /**
- * Request payload for {@code createEmployee}. Deliberately separate from {@link Employee}: the client should never
- * be able to supply server-owned fields such as uuid or contractHireDate.
+ * Request body for creating an employee. Kept separate from Employee so the client can't set fields like uuid
+ * that should only ever be set by the server.
  */
 public class CreateEmployeeRequest {
 

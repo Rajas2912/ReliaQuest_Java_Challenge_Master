@@ -15,18 +15,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Without this, Spring Security's default behavior for an unauthenticated request to a non-browser API is a bare
- * 403 with no body. This produces a 401 with the same {@link ErrorResponse} shape used everywhere else in the API,
- * so a caller gets a consistent, informative response regardless of which layer rejected the request.
+ * Sends back a 401 with a message when the API key is missing or wrong. Without this, Spring Security just
+ * sends an empty 403.
  */
 @Component
 public class ApiKeyAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final ObjectMapper objectMapper;
-
-    // Injects Spring Boot's autoconfigured ObjectMapper (already has the JSR-310 module registered for Instant)
-    // rather than `new ObjectMapper()`, so this serializes ErrorResponse.timestamp the same way the rest of the
-    // app's @ExceptionHandler responses do.
     public ApiKeyAuthenticationEntryPoint(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }

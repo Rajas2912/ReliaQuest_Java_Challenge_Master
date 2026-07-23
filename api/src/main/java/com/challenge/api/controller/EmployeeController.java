@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Exposes employee data as a REST API for consumption by Employees-R-US web hooks. Delegates business logic to
- * {@link EmployeeService} and owns all HTTP-facing concerns: request/response shape and exception-to-status-code
- * translation.
+ * REST controller for employee endpoints. Business logic lives in EmployeeService, this class just handles
+ * HTTP stuff - request/response shape and turning exceptions into status codes.
  */
 @RestController
 @RequestMapping("/api/v1/employee")
@@ -34,47 +33,33 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    /**
-     * @return All employees, unfiltered.
-     */
     @GetMapping
     public List<EmployeeResponse> getAllEmployees() {
+        // map Employee -> EmployeeResponse so the client only sees the DTO, not the internal model
         return employeeService.getAllEmployees().stream()
                 .map(EmployeeResponse::new)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * @param uuid Employee UUID
-     * @return Requested Employee if it exists; 404 otherwise, via {@link #handleNotFound}.
-     */
     @GetMapping("/{uuid}")
     public EmployeeResponse getEmployeeByUuid(@PathVariable UUID uuid) {
         Employee employee = employeeService.getEmployeeByUuid(uuid);
         return new EmployeeResponse(employee);
     }
 
-    /**
-     * @param requestBody Attributes necessary to create an employee.
-     * @return Newly created Employee with a 201 status.
-     */
     @PostMapping
     public ResponseEntity<EmployeeResponse> createEmployee(@Valid @RequestBody CreateEmployeeRequest requestBody) {
         Employee created = employeeService.createEmployee(requestBody);
         return ResponseEntity.status(HttpStatus.CREATED).body(new EmployeeResponse(created));
     }
 
-    /**
-     * Translates a missing employee into a 404. The service layer stays unaware of HTTP status codes.
-     */
+    // employee not found -> 404
     @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(EmployeeNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
     }
 
-    /**
-     * Translates a failed @Valid check on the create request into a 400 with a readable message.
-     */
+    // invalid request body -> 400 with details on what's wrong
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldErrors().stream()
@@ -83,9 +68,7 @@ public class EmployeeController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(message));
     }
 
-    /**
-     * Catch-all so an unexpected failure returns a clean 500 instead of a stack trace.
-     */
+    // anything else -> 500, so we don't send back a raw stack trace
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception ex) {
         ex.printStackTrace();

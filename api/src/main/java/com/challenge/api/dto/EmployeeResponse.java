@@ -5,9 +5,8 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Public API representation of an employee, kept separate from {@link Employee} so the internal domain model can
- * evolve (e.g. once a real adapter to the legacy system replaces {@code MockEmployee}) without changing the
- * contract Employees-R-US depends on.
+ * What gets sent back to the client for an employee. Kept separate from the internal model so it can change
+ * without breaking the API. Left out contractTerminationDate since it doesn't matter for an active employee.
  */
 public class EmployeeResponse {
 

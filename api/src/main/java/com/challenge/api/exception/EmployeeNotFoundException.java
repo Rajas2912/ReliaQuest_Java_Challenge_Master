@@ -3,8 +3,8 @@ package com.challenge.api.exception;
 import java.util.UUID;
 
 /**
- * Thrown by the service layer when a requested employee doesn't exist. Deliberately a plain RuntimeException with
- * no HTTP awareness — translating this into a status code is the controller's job, not the service's.
+ * Thrown when an employee can't be found. Just a plain exception - the controller catches it and turns it
+ * into a 404.
  */
 public class EmployeeNotFoundException extends RuntimeException {
 

@@ -4,10 +4,6 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Concrete, in-memory implementation of {@link Employee}. Stands in for a persistence-backed model since this
- * challenge is not concerned with an actual persistence layer.
- */
 public class MockEmployee implements Employee {
 
     private UUID uuid;

@@ -10,9 +10,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * Secures every endpoint in the API behind a shared API key (see {@link ApiKeyAuthFilter}). Csrf protection is
- * disabled and sessions are stateless: csrf exists to protect browser form submissions using cookies, neither of
- * which applies to a server-to-server webhook caller authenticating on every request via a header.
+ * Requires a valid API key on every request. CSRF and sessions are turned off since this isn't a browser app -
+ * just a header check on each call.
  */
 @Configuration
 @EnableWebSecurity

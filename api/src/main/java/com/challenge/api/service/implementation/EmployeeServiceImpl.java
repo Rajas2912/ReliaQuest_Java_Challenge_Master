@@ -14,16 +14,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Service;
 
 /**
- * Stand-in for the legacy employee management system. Backed by an in-memory map and seeded with mock data on
- * startup, per the challenge's explicit instruction not to worry about a real persistence layer. Swapping this for
- * a real adapter (DB, internal service call, etc.) would not require any change to {@link EmployeeService}'s
- * consumers.
+ * In-memory implementation of EmployeeService. No real database - just a hashmap  with fake employees on
+ * startup.
  */
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-
+    // ConcurrentHashMap since this is shared across requests
     private final Map<UUID, Employee> employeeStore = new ConcurrentHashMap<>();
 
+    // runs once on startup and fills the store with fake employees
     @PostConstruct
     void seedMockEmployees() {
         String[] firstNames = {"Alex", "Sam", "Jordan", "Taylor", "Casey", "Morgan", "Riley", "Jamie"};
@@ -48,6 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> getAllEmployees() {
+        // copying so the caller can't modify the internal map
         return List.copyOf(employeeStore.values());
     }
 
@@ -55,6 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee getEmployeeByUuid(UUID uuid) {
         Employee employee = employeeStore.get(uuid);
         if (employee == null) {
+            // plain exception here, controller decides what status code to send back
             throw new EmployeeNotFoundException(uuid);
         }
         return employee;
@@ -62,6 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee createEmployee(CreateEmployeeRequest request) {
+        // uuid and hire date get set here, not by the client
         MockEmployee employee = new MockEmployee(
                 UUID.randomUUID(),
                 request.getFirstName(),
